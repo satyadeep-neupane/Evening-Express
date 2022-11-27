@@ -10,7 +10,7 @@ exports.attemptLogin = async (req, res) => {
         if(!email || !password) return res.status(400).send({message: 'Please provide email and password'});
 
         const user = await User.findOne({'email': email});
-        if(!user) res.status(404).send({message: "User not found with email " + email});
+        if(!user) return res.status(404).send({message: "User not found with email " + email});
 
         const validPassword = await bcrypt.compare(password, user.password);
         if(validPassword){
@@ -18,22 +18,22 @@ exports.attemptLogin = async (req, res) => {
             const refreshToken = generateRefreshToken(generatePayload(user));
             try{
                 await Token.create({'token': refreshToken, 'user_id': user._id});
-                res.cookie('refreshToken', refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000});
-                res.json({
+                // res.cookie('refreshToken', refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000});
+                return res.json({
                     user: user,
                     accessToken: accessToken,
                     refreshToken: refreshToken
                 });    
             }catch(err){
                 console.log(err);
-                res.status(401).send({message: 'Something Went Wrong'});
+                return res.status(401).send({message: 'Something Went Wrong'});
             }
         }else{
-            res.status(401).send({message: 'Invalid Email or Password'});
+            return res.status(401).send({message: 'Invalid Email or Password'});
         }
     }catch(err)
     {
-        res.status(500).send({
+        return res.status(500).send({
             message: err.message || "Some error occurred while attempting the Login."
         });
     }
@@ -50,10 +50,10 @@ exports.getNewAccessToken = async (req, res) => {
             if(err) return res.status(403).send({message: 'Refresh Token Expired'});
             if(user.sub != token.user_id) return res.status(403).send({message: 'Invalid Refresh Token'});
             const accessToken = generateAccessToken(generatePayload(user));
-            res.json({accessToken: accessToken});
+            return res.json({accessToken: accessToken});
         });
     }catch(err){
-        res.status(500).send({
+        return res.status(500).send({
             message:"Some error occurred while attempting the Login."
         });
     }

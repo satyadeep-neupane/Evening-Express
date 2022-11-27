@@ -15,6 +15,7 @@ dotenv.config();
 
 // router include
 const userRoute = require('./app/routes/route.user');
+const categoryRoute = require('./app/routes/route.category');
 const authRoute = require('./app/routes/route.auth');
 
 const verifyJwt = require('./app/middleware/verifyJwt');
@@ -24,6 +25,10 @@ mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTo
 
 app.use('/api', authRoute);
 app.use('/api/user', userRoute);
+
+// protected routes
+app.use(verifyJwt);
+app.use('/api/category', categoryRoute);
 
 // app listen
 app.listen(process.env.PORT, () => { console.log(`Server is running on port ${process.env.PORT}`) });
