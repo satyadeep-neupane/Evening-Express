@@ -71,7 +71,7 @@ function generatePayload(user)
 
 function generateAccessToken(payload) {
     // expires after half and hour (1800 seconds = 30 minutes)
-    return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '60s' });
+    return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '600s' });
 }
 
 function generateRefreshToken(payload) {

@@ -18,7 +18,7 @@ const userRoute = require('./app/routes/route.user');
 const categoryRoute = require('./app/routes/route.category');
 const authRoute = require('./app/routes/route.auth');
 
-const verifyJwt = require('./app/middleware/verifyJwt');
+const verifyJwt = require('./app/middleware/verifyJWT');
 
 
 mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true }, () => { console.log('Connected to DB!') });
